@@ -3,7 +3,7 @@ import { BrowserView, MobileOnlyView } from 'react-device-detect';
 
 const AppBar = () => {
     const currentTime = dayjs().format('HH:mm');
-    const customDate = dayjs('2023-09-02'); 
+    const customDate = dayjs(); 
     const formattedDate = customDate.format('D MMMM YYYY');
     const currentHour = dayjs().hour();
     const currentMinute = dayjs().format('mm');;
