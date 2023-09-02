@@ -56,8 +56,8 @@ function App() {
               </div>
               <div className="flex flex-1 flex-col justify-center gap-20">
                 <CountCard title="Hari Ini" count={visitorCounts.inCount} />
-                <CountCard title="Minggu Ini" count={visitorCounts.totalMonthly} />
-                <CountCard title="Bulan Ini" count={visitorCounts.totalWeekly} />
+                <CountCard title="Minggu Ini" count={visitorCounts.totalWeekly} />
+                <CountCard title="Bulan Ini" count={visitorCounts.totalMonthly} />
               </div>
             </div>
             </BrowserView>
@@ -65,8 +65,8 @@ function App() {
               <CardMobile insideCount={visitorCounts.insideCount} outCount={visitorCounts.outCount}/>
               <div className="flex flex-1 flex-col justify-center gap-6">
                 <CountCard title="Hari Ini" count={visitorCounts.inCount} />
-                <CountCard title="Minggu Ini" count={visitorCounts.totalMonthly} />
-                <CountCard title="Bulan Ini" count={visitorCounts.totalWeekly} />
+                <CountCard title="Minggu Ini" count={visitorCounts.totalWeekly} />
+                <CountCard title="Bulan Ini" count={visitorCounts.totalMonthly} />
               </div>
             </MobileOnlyView>
           <div className="flex flex-col gap-4">
