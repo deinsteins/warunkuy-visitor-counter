@@ -1,7 +1,7 @@
 export const firebaseConfig = {
-    apiKey: process.env.API_KEY,
-    authDomain: process.env.FIREBASE_URL,
-    databaseURL: process.env.DATABASE_URL,
-    projectId: process.env.PROJECT_ID,
+    apiKey: process.env.REACT_APP_API_KEY,
+    authDomain: process.env.REACT_APP_FIREBASE_URL,
+    databaseURL: process.env.REACT_APP_DATABASE_URL,
+    projectId: process.env.REACT_APP_PROJECT_ID,
   };
   
