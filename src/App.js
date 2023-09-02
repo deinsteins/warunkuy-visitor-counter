@@ -11,7 +11,7 @@ import { BrowserView, MobileOnlyView } from "react-device-detect";
 import CardMobile from "./components/CardMobile";
 
 firebase.initializeApp(firebaseConfig);
-
+firebase.analytics();
 
 function App() {
   const [visitorCounts, setVisitorCounts] = useState({
@@ -36,6 +36,11 @@ function App() {
 
     // Clean up the listener when the component unmounts
     return () => visitorCountsRef.off('value');
+  }, []);
+
+  useEffect(() => {
+    // Track a page view event
+    firebase.analytics().logEvent('page_view');
   }, []);
 
   return (
