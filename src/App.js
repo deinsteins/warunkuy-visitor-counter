@@ -5,6 +5,7 @@ import ColumnChart from "./components/ColumnChart";
 import firebase from 'firebase/compat/app';
 import database from 'firebase/compat/database';// Make sure to import the relevant Firebase services you plan to use
 import { firebaseConfig } from "./firebase";
+import 'firebase/compat/analytics';
 import { useEffect } from "react";
 import { useState } from "react";
 import { BrowserView, MobileOnlyView } from "react-device-detect";
