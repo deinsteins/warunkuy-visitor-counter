@@ -19,6 +19,8 @@ function App() {
     insideCount: 0,
     outCount: 0,
     totalCount: 0,
+    totalMonthly: 0,
+    totalWeekly: 0
   });
 
   useEffect(() => {
@@ -48,8 +50,8 @@ function App() {
               </div>
               <div className="flex flex-1 flex-col justify-center gap-20">
                 <CountCard title="Hari Ini" count={visitorCounts.inCount} />
-                <CountCard title="Minggu Ini" count="0" />
-                <CountCard title="Bulan Ini" count="0" />
+                <CountCard title="Minggu Ini" count={visitorCounts.totalMonthly} />
+                <CountCard title="Bulan Ini" count={visitorCounts.totalWeekly} />
               </div>
             </div>
             </BrowserView>
@@ -57,8 +59,8 @@ function App() {
               <CardMobile insideCount={visitorCounts.insideCount} outCount={visitorCounts.outCount}/>
               <div className="flex flex-1 flex-col justify-center gap-6">
                 <CountCard title="Hari Ini" count={visitorCounts.inCount} />
-                <CountCard title="Minggu Ini" count="0" />
-                <CountCard title="Bulan Ini" count="0" />
+                <CountCard title="Minggu Ini" count={visitorCounts.totalMonthly} />
+                <CountCard title="Bulan Ini" count={visitorCounts.totalWeekly} />
               </div>
             </MobileOnlyView>
           <div className="flex flex-col gap-4">
