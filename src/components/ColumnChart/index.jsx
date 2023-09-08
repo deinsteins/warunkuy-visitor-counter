@@ -5,51 +5,51 @@ const ColumnChart = () => {
   const [data, setData] = useState([
     {
       name: 'Januari',
-      data: 10
-    },
-    {
-      name: 'Februari',
-      data: 40
-    },
-    {
-      name: 'Maret',
-      data: 50
-    },
-    {
-      name: 'April',
-      data: 20
-    },
-    {
-      name: 'Mei',
-      data: 90
-    },
-    {
-      name: 'Juni',
       data: 120
     },
     {
+      name: 'Februari',
+      data: 170
+    },
+    {
+      name: 'Maret',
+      data: 210
+    },
+    {
+      name: 'April',
+      data: 153
+    },
+    {
+      name: 'Mei',
+      data: 202
+    },
+    {
+      name: 'Juni',
+      data: 227
+    },
+    {
       name: 'Juli',
-      data: 30
+      data: 255
     },
     {
       name: 'Agustus',
-      data: 60
+      data: 311
     },
     {
       name: 'September',
-      data: 80
+      data: 0
     },
     {
       name: 'Oktober',
-      data: 20
+      data: 0
     },
     {
       name: 'November',
-      data: 60
+      data: 0
     },
     {
       name: 'Desember',
-      data: 80
+      data: 0
     }
   ]);
 
