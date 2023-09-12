@@ -31,10 +31,6 @@ function App() {
   const [weeklyData, setWeeklyData] = useState([]);
   const [monthlyData, setMonthlyData] = useState([]);
 
-  // console.log(weeklyData[0].total_visitor)
-  console.log(dailyData)
-  console.log(monthlyData)
-
   useEffect(() => {
     // Function to calculate weekly data from daily data
     const calculateWeeklyData = () => {
@@ -233,8 +229,8 @@ function App() {
                 <CountCard title="Hari Ini" count={visitorCounts.inCount} />
                 <button className="bg-[#3F3F3F] p-4 rounded-lg text-white text-2xl" onClick={handleSaveDayCount}>Simpan Data</button>
                 </div>
-                <CountCard title="Minggu Ini" count={visitorCounts.totalWeekly} />
-                <CountCard title="Bulan Ini" count={visitorCounts.totalMonthly} />
+                <CountCard title="Minggu Ini" count={weeklyData[0].total_visitor} />
+                <CountCard title="Bulan Ini" count={monthlyData[0].total_visitor} />
               </div>
             </div>
             </BrowserView>
@@ -245,8 +241,8 @@ function App() {
                 <CountCard title="Hari Ini" count={visitorCounts.inCount} />
                 <button className="bg-[#3F3F3F] p-4 rounded-lg text-white text-2xl" onClick={handleSaveDayCount}>Simpan Data</button>
                 </div>
-                <CountCard title="Minggu Ini" count={visitorCounts.totalWeekly} />
-                <CountCard title="Bulan Ini" count={visitorCounts.totalMonthly} />
+                <CountCard title="Minggu Ini" count={weeklyData[0].total_visitor} />
+                <CountCard title="Bulan Ini" count={monthlyData[0].total_visitor} />
               </div>
             </MobileOnlyView>
           <div className="flex flex-col gap-4">
