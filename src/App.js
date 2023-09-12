@@ -27,6 +27,86 @@ function App() {
     totalWeekly: 0
   });
 
+  const [dailyData, setDailyData] = useState([]);
+  const [weeklyData, setWeeklyData] = useState([]);
+
+  // console.log(weeklyData[0].total_visitor)
+  console.log(dailyData)
+
+  useEffect(() => {
+    // Function to calculate weekly data from daily data
+    const calculateWeeklyData = () => {
+      // Group daily data into weekly data
+      const weeklyData = dailyData.reduce((weeklyData, dailyEntry) => {
+        const date = dayjs(dailyEntry.date);
+        const weekStart = date.startOf("week").format("YYYY-MM-DD");
+        const weekEnd = date.endOf("week").format("YYYY-MM-DD");
+        const weekKey = `${weekStart}-${weekEnd}`;
+
+        if (!weeklyData[weekKey]) {
+          weeklyData[weekKey] = {
+            startOfWeek: weekStart,
+            endOfWeek: weekEnd,
+            total_visitor: 0, // Initialize total_visitor to 0
+          };
+        }
+
+        weeklyData[weekKey].total_visitor += dailyEntry.total_visitor; // Add daily total_visitor to weekly total_visitor
+
+        return weeklyData;
+      }, {});
+
+      // Convert weeklyData object into an array
+      const weeklyDataArray = Object.values(weeklyData);
+
+      // Set the weekly data in your component's state
+      setWeeklyData(weeklyDataArray);
+    };
+
+    // Call the function to calculate weekly data when dailyData changes
+    calculateWeeklyData();
+  }, [dailyData]);
+
+  useEffect(() => {
+    // Function to fetch and filter data from Firestore
+    const fetchDataFromFirestore = async () => {
+      try {
+        const collectionRef = db.collection("visitor");
+        const snapshot = await collectionRef.orderBy("date", "desc").get();
+        
+        const filteredData = [];
+        const dateMap = new Map();
+
+        snapshot.forEach((doc) => {
+          const documentData = doc.data();
+          const currentDate = documentData.date;
+
+          // Check if we have already encountered this date
+          if (!dateMap.has(currentDate)) {
+            dateMap.set(currentDate, documentData);
+          } else {
+            // If we have encountered this date, compare times and keep the latest one
+            const existingData = dateMap.get(currentDate);
+            if (documentData.time > existingData.time) {
+              dateMap.set(currentDate, documentData);
+            }
+          }
+        });
+
+        // Convert the map values back to an array
+        filteredData.push(...dateMap.values());
+
+        // Set the filtered data in your component's state
+        setDailyData(filteredData);
+      } catch (error) {
+        console.error("Error fetching and filtering data from Firestore:", error);
+      }
+    };
+
+    // Call the fetch function when the component mounts
+    fetchDataFromFirestore();
+  }, []);
+
   useEffect(() => {
     // Reference to the 'visitorCounts' node in the database
     const visitorCountsRef = firebase.database().ref('visitorCounts');
@@ -52,7 +132,6 @@ function App() {
   const formattedDate = customDate.format('D MMMM YYYY');
 
   const userData = {
-
     date: formattedDate,
     time: currentTime,
     total_visitor: visitorCounts.inCount,
@@ -62,6 +141,23 @@ function App() {
     // Add a new document with a generated ID
     return db.collection('visitor').add(userData);
   };
+
+  const saveWeeklyDataToFirestore = (data) => {
+    // Add a new document with a generated ID
+    return db.collection('visitor-weekly').add(data);
+  };
+  
+
+  useEffect(() => {
+    if (weeklyData.length > 0) {
+      const userData = {
+        date: `${weeklyData[0].startOfWeek} - ${weeklyData[0].endOfWeek}`,
+        time: currentTime,
+        total_visitor: weeklyData[0].total_visitor,
+      };
+      saveWeeklyDataToFirestore(userData)
+    }
+  }, [weeklyData])
 
   const handleSaveDayCount = () => {
     saveUserDataToFirestore(userData)
