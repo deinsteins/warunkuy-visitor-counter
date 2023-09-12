@@ -29,9 +29,11 @@ function App() {
 
   const [dailyData, setDailyData] = useState([]);
   const [weeklyData, setWeeklyData] = useState([]);
+  const [monthlyData, setMonthlyData] = useState([]);
 
   // console.log(weeklyData[0].total_visitor)
   console.log(dailyData)
+  console.log(monthlyData)
 
   useEffect(() => {
     // Function to calculate weekly data from daily data
@@ -66,6 +68,37 @@ function App() {
     // Call the function to calculate weekly data when dailyData changes
     calculateWeeklyData();
   }, [dailyData]);
+
+  useEffect(() => {
+    // Function to calculate monthly data from weekly data
+    const calculateMonthlyData = () => {
+      // Group weekly data into monthly data
+      const monthlyData = weeklyData.reduce((monthlyData, weeklyEntry) => {
+        const monthKey = dayjs(weeklyEntry.startOfWeek).format("YYYY-MM");
+
+        if (!monthlyData[monthKey]) {
+          monthlyData[monthKey] = {
+            startOfMonth: dayjs(weeklyEntry.startOfWeek).startOf("month").format("YYYY-MM-DD"),
+            endOfMonth: dayjs(weeklyEntry.startOfWeek).endOf("month").format("YYYY-MM-DD"),
+            total_visitor: 0, // Initialize total_visitor to 0
+          };
+        }
+
+        monthlyData[monthKey].total_visitor += weeklyEntry.total_visitor; // Add weekly total_visitor to monthly total_visitor
+
+        return monthlyData;
+      }, {});
+
+      // Convert monthlyData object into an array
+      const monthlyDataArray = Object.values(monthlyData);
+
+      // Set the monthly data in your component's state
+      setMonthlyData(monthlyDataArray);
+    };
+
+    // Call the function to calculate monthly data when weeklyData changes
+    calculateMonthlyData();
+  }, [weeklyData]);
 
   useEffect(() => {
     // Function to fetch and filter data from Firestore
@@ -129,7 +162,7 @@ function App() {
 
   const currentTime = dayjs().format('HH:mm');
   const customDate = dayjs(); 
-  const formattedDate = customDate.format('D MMMM YYYY');
+  const formattedDate = customDate.format('YYYY-MM-DD');
 
   const userData = {
     date: formattedDate,
@@ -147,6 +180,11 @@ function App() {
     return db.collection('visitor-weekly').add(data);
   };
   
+  const saveMonthlyDataToFirestore = (data) => {
+    // Add a new document with a generated ID
+    return db.collection('visitor-monthly').add(data);
+  };
+  
 
   useEffect(() => {
     if (weeklyData.length > 0) {
@@ -158,6 +196,17 @@ function App() {
       saveWeeklyDataToFirestore(userData)
     }
   }, [weeklyData])
+
+  useEffect(() => {
+    if (monthlyData.length > 0) {
+      const userData = {
+        date: `${monthlyData[0].startOfMonth} - ${monthlyData[0].endOfMonth}`,
+        time: currentTime,
+        total_visitor: monthlyData[0].total_visitor,
+      };
+      saveMonthlyDataToFirestore(userData)
+    }
+  }, [monthlyData])
 
   const handleSaveDayCount = () => {
     saveUserDataToFirestore(userData)
