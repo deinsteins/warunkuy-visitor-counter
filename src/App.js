@@ -3,16 +3,19 @@ import Card from "./components/Card";
 import CountCard from "./components/CountCard";
 import ColumnChart from "./components/ColumnChart";
 import firebase from 'firebase/compat/app';
-import database from 'firebase/compat/database';// Make sure to import the relevant Firebase services you plan to use
+import database from 'firebase/compat/database';
+import 'firebase/compat/firestore';
 import { firebaseConfig } from "./firebase";
 import 'firebase/compat/analytics';
 import { useEffect } from "react";
 import { useState } from "react";
 import { BrowserView, MobileOnlyView } from "react-device-detect";
 import CardMobile from "./components/CardMobile";
+import dayjs from 'dayjs';
 
 firebase.initializeApp(firebaseConfig);
 firebase.analytics();
+const db = firebase.firestore();
 
 function App() {
   const [visitorCounts, setVisitorCounts] = useState({
@@ -44,6 +47,32 @@ function App() {
     firebase.analytics().logEvent('page_view');
   }, []);
 
+  const currentTime = dayjs().format('HH:mm');
+  const customDate = dayjs(); 
+  const formattedDate = customDate.format('D MMMM YYYY');
+
+  const userData = {
+
+    date: formattedDate,
+    time: currentTime,
+    total_visitor: visitorCounts.inCount,
+  };
+
+  const saveUserDataToFirestore = (userData) => {
+    // Add a new document with a generated ID
+    return db.collection('visitor').add(userData);
+  };
+
+  const handleSaveDayCount = () => {
+    saveUserDataToFirestore(userData)
+      .then((docRef) => {
+        alert("Data Berhasil di Simpan")
+      })
+      .catch((error) => {
+        alert('Error adding document: ', error);
+      });
+  };
+
   return (
     <div className="sm:mx-4 px-4 py-4 sm:px-12">
         <AppBar />
@@ -55,7 +84,10 @@ function App() {
                 <Card title="KELUAR" variant={'success'} count={visitorCounts.outCount} />
               </div>
               <div className="flex flex-1 flex-col justify-center gap-20">
+                <div className="flex flex-col gap-4">
                 <CountCard title="Hari Ini" count={visitorCounts.inCount} />
+                <button className="bg-[#3F3F3F] p-4 rounded-lg text-white text-2xl" onClick={handleSaveDayCount}>Simpan Data</button>
+                </div>
                 <CountCard title="Minggu Ini" count={visitorCounts.totalWeekly} />
                 <CountCard title="Bulan Ini" count={visitorCounts.totalMonthly} />
               </div>
