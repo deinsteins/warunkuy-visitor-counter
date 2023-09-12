@@ -96,7 +96,10 @@ function App() {
             <MobileOnlyView className="flex flex-col gap-8 justify-center">
               <CardMobile insideCount={visitorCounts.insideCount} outCount={visitorCounts.outCount}/>
               <div className="flex flex-1 flex-col justify-center gap-6">
+                <div className="flex flex-col gap-4">
                 <CountCard title="Hari Ini" count={visitorCounts.inCount} />
+                <button className="bg-[#3F3F3F] p-4 rounded-lg text-white text-2xl" onClick={handleSaveDayCount}>Simpan Data</button>
+                </div>
                 <CountCard title="Minggu Ini" count={visitorCounts.totalWeekly} />
                 <CountCard title="Bulan Ini" count={visitorCounts.totalMonthly} />
               </div>
