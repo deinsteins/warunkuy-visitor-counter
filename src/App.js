@@ -30,7 +30,25 @@ function App() {
   const [dailyData, setDailyData] = useState([]);
   const [weeklyData, setWeeklyData] = useState([]);
   const [monthlyData, setMonthlyData] = useState([]);
+  const [isBlinking, setIsBlinking] = useState(false);
 
+  // Monitor changes in visitorCounts.insideCount
+  useEffect(() => {
+    // Check if visitorCounts.insideCount is equal to 30
+    if (visitorCounts.insideCount === 30) {
+      // Toggle the blinking state every second (you can adjust the interval as needed)
+      const intervalId = setInterval(() => {
+        setIsBlinking((prevIsBlinking) => !prevIsBlinking);
+      }, 1000);
+
+      // Cleanup the interval when the component unmounts or when insideCount changes
+      return () => clearInterval(intervalId);
+    } else {
+      // If insideCount is not 30, stop blinking
+      setIsBlinking(false);
+    }
+  }, [visitorCounts.insideCount]);
+  
   useEffect(() => {
     // Function to calculate weekly data from daily data
     const calculateWeeklyData = () => {
@@ -215,7 +233,7 @@ function App() {
   };
 
   return (
-    <div className="sm:mx-4 px-4 py-4 sm:px-12">
+    <div className="sm:mx-4 px-4 py-4 sm:px-12" style={isBlinking? {background: "red"} : {background: "white"}}>
         <AppBar />
         <main className="flex flex-col mt-8 justify-between gap-12">
             <BrowserView>
@@ -229,8 +247,8 @@ function App() {
                 <CountCard title="Hari Ini" count={visitorCounts.inCount} />
                 <button className="bg-[#3F3F3F] p-4 rounded-lg text-white text-2xl" onClick={handleSaveDayCount}>Simpan Data</button>
                 </div>
-                <CountCard title="Minggu Ini" count={weeklyData[0].total_visitor} />
-                <CountCard title="Bulan Ini" count={monthlyData[0].total_visitor} />
+                <CountCard title="Minggu Ini" count={weeklyData[0]? weeklyData[0]?.total_visitor : 0} />
+                <CountCard title="Bulan Ini" count={monthlyData[0]? monthlyData[0]?.total_visitor : 0} />
               </div>
             </div>
             </BrowserView>
@@ -241,8 +259,8 @@ function App() {
                 <CountCard title="Hari Ini" count={visitorCounts.inCount} />
                 <button className="bg-[#3F3F3F] p-4 rounded-lg text-white text-2xl" onClick={handleSaveDayCount}>Simpan Data</button>
                 </div>
-                <CountCard title="Minggu Ini" count={weeklyData[0].total_visitor} />
-                <CountCard title="Bulan Ini" count={monthlyData[0].total_visitor} />
+                <CountCard title="Minggu Ini" count={weeklyData[0]? weeklyData[0]?.total_visitor : 0} />
+                <CountCard title="Bulan Ini" count={monthlyData[0]? monthlyData[0]?.total_visitor : 0} />
               </div>
             </MobileOnlyView>
           <div className="flex flex-col gap-4">
