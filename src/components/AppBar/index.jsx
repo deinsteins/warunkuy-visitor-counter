@@ -103,6 +103,16 @@ const AppBar = () => {
                     <h2 className='text-center font-semibold text-xl'>{formattedDate}</h2>
                 </div>
             </div>
+            <div className='flex flex-col gap-4 font-normal text-sm text-center border-black border-2 py-4 mt-4'>
+                <p>Lama Sistem Berjalan: {formatTime(elapsedTime)}</p>
+                <div className='flex gap-4 mx-auto'>
+                    {!isTimerRunning?
+                        <button className='bg-blue-500 p-1 px-2 rounded text-white' onClick={startTimer}>Start Timer</button>
+                        :
+                        <button className='bg-red-500 p-1 px-2 rounded text-white' onClick={stopTimer}>Stop Timer</button>
+                    }
+                </div>
+                </div>
         </MobileOnlyView>
         </>
     )
