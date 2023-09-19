@@ -12,6 +12,7 @@ import { useState } from "react";
 import { BrowserView, MobileOnlyView } from "react-device-detect";
 import CardMobile from "./components/CardMobile";
 import dayjs from 'dayjs';
+import soundFile from "./robotttt.mp3";
 
 firebase.initializeApp(firebaseConfig);
 firebase.analytics();
@@ -31,23 +32,38 @@ function App() {
   const [weeklyData, setWeeklyData] = useState([]);
   const [monthlyData, setMonthlyData] = useState([]);
   const [isBlinking, setIsBlinking] = useState(false);
+  const [audio] = useState(new Audio(soundFile)); 
 
-  // Monitor changes in visitorCounts.insideCount
-  useEffect(() => {
-    // Check if visitorCounts.insideCount is equal to 30
-    if (visitorCounts.insideCount === 30) {
-      // Toggle the blinking state every second (you can adjust the interval as needed)
-      const intervalId = setInterval(() => {
-        setIsBlinking((prevIsBlinking) => !prevIsBlinking);
-      }, 1000);
+  const playAudio = () => {
+    audio.play();
+}
 
-      // Cleanup the interval when the component unmounts or when insideCount changes
-      return () => clearInterval(intervalId);
-    } else {
-      // If insideCount is not 30, stop blinking
-      setIsBlinking(false);
-    }
-  }, [visitorCounts.insideCount]);
+ // Monitor changes in visitorCounts.insideCount
+ useEffect(() => {
+  // Check if visitorCounts.insideCount is equal to 30
+  if (visitorCounts.insideCount === 30) {
+    // Play the audio
+    playAudio();
+    // Toggle the blinking state every second (you can adjust the interval as needed)
+    const intervalId = setInterval(() => {
+      setIsBlinking((prevIsBlinking) => !prevIsBlinking);
+    }, 500);
+
+    // Cleanup the interval when the component unmounts or when insideCount changes
+    return () => {
+      clearInterval(intervalId);
+      // Pause the audio and reset its time when the component unmounts or when insideCount changes
+      audio.pause();
+      audio.currentTime = 0;
+    };
+  } else {
+    // If insideCount is not 30, stop blinking and pause the audio
+    setIsBlinking(false);
+    audio.pause();
+    audio.currentTime = 0;
+  }
+}, [visitorCounts.insideCount, audio]);
+
   
   useEffect(() => {
     // Function to calculate weekly data from daily data
