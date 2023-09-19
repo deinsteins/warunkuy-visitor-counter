@@ -347,7 +347,7 @@ function App() {
             </MobileOnlyView>
           <div className="flex flex-col gap-4">
             <h2 className="text-3xl text-center font-bold">DATA STATISTIK PENGUNJUNG</h2>
-            <ColumnChart />
+            <ColumnChart monthlyData={monthlyData} />
           </div>
         </main>
     </div>

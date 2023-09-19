@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
-const ColumnChart = () => {
+const ColumnChart = ({monthlyData}) => {
+  console.log(monthlyData[0]?.total_visitor)
   const [data, setData] = useState([
     {
       name: 'Januari',
@@ -37,7 +38,7 @@ const ColumnChart = () => {
     },
     {
       name: 'September',
-      data: 0
+      data: monthlyData[0]?.total_visitor
     },
     {
       name: 'Oktober',
