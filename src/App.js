@@ -205,16 +205,82 @@ function App() {
     return db.collection('visitor').add(userData);
   };
 
-  const saveWeeklyDataToFirestore = (data) => {
-    // Add a new document with a generated ID
-    return db.collection('visitor-weekly').add(data);
+  const saveWeeklyDataToFirestore = async (data) => {
+    try {
+      // Get the current date
+      const currentDate = new Date();
+      const currentYear = currentDate.getFullYear();
+      const currentMonth = (currentDate.getMonth() + 1).toString().padStart(2, '0');
+      const currentDay = currentDate.getDate().toString().padStart(2, '0');
+      
+      // Query Firestore to find the last document in this week
+      const querySnapshot = await db.collection('visitor-weekly')
+        .where('id', '>=', `${currentYear}-${currentMonth}-01`)
+        .where('id', '<=', `${currentYear}-${currentMonth}-${currentDay}`)
+        .orderBy('id', 'desc')
+        .limit(1)
+        .get();
+  
+      let lastDocumentId = null;
+      querySnapshot.forEach((doc) => {
+        lastDocumentId = doc.data().id;
+      });
+  
+      // Increment the first number in the ID or start from 1 if there's no previous document
+      const incrementValue = lastDocumentId ? parseInt(lastDocumentId.split('-')[0]) + 1 : 1;
+  
+      // Create the new ID
+      const newId = `${incrementValue}-${currentYear}-${currentMonth}-${currentDay}`;
+      
+      // Add the new ID to your data object
+      data.id = newId;
+  
+      // Use the generated ID to add a new document
+      await db.collection('visitor-weekly').doc(newId).set(data);
+  
+      console.log('Document saved with ID:', newId);
+    } catch (error) {
+      console.error('Error saving document:', error);
+    }
   };
   
-  const saveMonthlyDataToFirestore = (data) => {
-    // Add a new document with a generated ID
-    return db.collection('visitor-monthly').add(data);
-  };
+  const saveMonthlyDataToFirestore = async (data) => {
+    try {
+      // Get the current month and year
+      const currentDate = new Date();
+      const currentMonth = currentDate.getMonth() + 1; // Months are 0-based, so add 1
+      const currentYear = currentDate.getFullYear();
+      const currentMonthString = `${currentYear}-${currentMonth.toString().padStart(2, '0')}`;
+      
+      // Query the Firestore to find the last document in this month
+      const querySnapshot = await db.collection('visitor-monthly')
+        .where('id', '>=', currentMonthString + '-01')
+        .where('id', '<', currentMonthString + '-z') // 'z' is used to ensure it's the end of the current month
+        .orderBy('id', 'desc')
+        .limit(1)
+        .get();
+      
+      let lastDocumentId = null;
+      querySnapshot.forEach((doc) => {
+        lastDocumentId = doc.data().id;
+      });
   
+      // Increment the first number in the ID or start from 1 if there's no previous document
+      const incrementValue = lastDocumentId ? parseInt(lastDocumentId.split('-')[0]) + 1 : 1;
+      
+      // Create the new ID
+      const newId = `${incrementValue}-${currentMonthString}`;
+      
+      // Add the new ID to your data object
+      data.id = newId;
+  
+      // Use the generated ID to add a new document
+      await db.collection('visitor-monthly').doc(newId).set(data);
+  
+    } catch (error) {
+      console.error('Error saving document:', error);
+    }
+  };  
 
   useEffect(() => {
     if (weeklyData.length > 0) {
