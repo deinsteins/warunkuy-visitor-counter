@@ -88,11 +88,11 @@ const ColumnChart = ({monthlyData}) => {
     },
     {
       name: 'September',
-      data: monthlyData[0]?.total_visitor
+      data: 244
     },
     {
       name: 'Oktober',
-      data: 0
+      data: monthlyData[0]?.total_visitor
     },
     {
       name: 'November',
